@@ -20,15 +20,8 @@ import UIKit
 
 class ModelController: NSObject, UIPageViewControllerDataSource {
 
-  var pageData: [String] = []
-
-
-  override init() {
-      super.init()
-    // Create the data model.
-    let dateFormatter = DateFormatter()
-    pageData = dateFormatter.monthSymbols
-  }
+  var pageData: [String] = ["1", "2", "3"]
+  var pageControllers: [DataViewController] = []
 
   func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
     // Return the data view controller for the given index.
@@ -36,9 +29,14 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
         return nil
     }
 
+    if index < pageControllers.count {
+      return pageControllers[index]
+    }
+
     // Create a new view controller and pass suitable data.
     let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
     dataViewController.dataObject = self.pageData[index]
+    pageControllers.append(dataViewController)
     return dataViewController
   }
 

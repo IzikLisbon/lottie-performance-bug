@@ -1,0 +1,6 @@
+framework module Pods_lottie_performance_bug {
+  umbrella header "Pods-lottie_performance_bug-umbrella.h"
+
+  export *
+  module * { export * }
+}

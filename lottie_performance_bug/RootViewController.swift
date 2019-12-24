@@ -15,6 +15,8 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
 
   override func viewDidLoad() {
     super.viewDidLoad()
+    setupNavigationBarButtons()
+
     // Do any additional setup after loading the view.
     // Configure the page view controller and add it as a child view controller.
     self.pageViewController = UIPageViewController(transitionStyle: .pageCurl, navigationOrientation: .horizontal, options: nil)
@@ -26,6 +28,12 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
 
     self.pageViewController!.dataSource = self.modelController
 
+    // load all pages
+    for i in 0..<modelController.pageData.count {
+      let viewController = modelController.viewControllerAtIndex(i, storyboard: UIStoryboard(name: "Main", bundle: nil))!
+      let _ = viewController.view
+    }
+
     self.addChild(self.pageViewController!)
     self.view.addSubview(self.pageViewController!.view)
 
@@ -34,9 +42,30 @@ class RootViewController: UIViewController, UIPageViewControllerDelegate {
     if UIDevice.current.userInterfaceIdiom == .pad {
         pageViewRect = pageViewRect.insetBy(dx: 40.0, dy: 40.0)
     }
-    self.pageViewController!.view.frame = pageViewRect
+    self.pageViewController!.view.stretchToContainerEdges()
 
     self.pageViewController!.didMove(toParent: self)
+  }
+
+  private func setupNavigationBarButtons() {
+    let leftButton = UIBarButtonItem(title: "Pause Animation", style: .plain, target: self, action: #selector(togglePauseAndStopAnimations))
+    let rightButton = UIBarButtonItem(title: "Remove Lottie", style: .plain, target: self, action: #selector(toggleLottieAndStaticImage))
+    navigationItem.leftBarButtonItem = leftButton
+    navigationItem.rightBarButtonItem = rightButton
+  }
+
+  @objc private func togglePauseAndStopAnimations() {
+    for i in 0..<modelController.pageData.count {
+      let viewController = modelController.viewControllerAtIndex(i, storyboard: UIStoryboard(name: "Main", bundle: nil))!
+      viewController.togglePauseAndStopAnimation()
+    }
+  }
+
+  @objc private func toggleLottieAndStaticImage() {
+    for i in 0..<modelController.pageData.count {
+      let viewController = modelController.viewControllerAtIndex(i, storyboard: UIStoryboard(name: "Main", bundle: nil))!
+      viewController.toggleLottieAndStaticImage()
+    }
   }
 
   var modelController: ModelController {
