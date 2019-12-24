@@ -1,5 +1,5 @@
 //
-//  DataViewController.swift
+//  PageViewController.swift
 //  lottie_performance_bug
 //
 //  Created by Izik Lisbon on 12/23/19.
@@ -9,13 +9,15 @@
 import UIKit
 import Lottie
 
-class DataViewController: UIViewController {
+// A page in UIPageViewController with a running Lottie animation.
+// Exposes methods to start/stop the Lottie animation and to remove/add Lottie view
+class PageViewController: UIViewController {
   @IBOutlet weak var dataLabel: UILabel!
   var dataObject: String = ""
   var animationView: AnimationView?
   var imageView: UIImageView?
   @IBOutlet weak var contentView: UIView!
-  var boolIsAnimating = true
+  var isAnimating = true
 
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -23,11 +25,11 @@ class DataViewController: UIViewController {
   }
 
   func togglePauseAndStopAnimation() {
-    if boolIsAnimating {
-      boolIsAnimating = false
+    if isAnimating {
+      isAnimating = false
       animationView?.stop()
     } else {
-      boolIsAnimating = true
+      isAnimating = true
       animationView?.play()
     }
   }
@@ -47,6 +49,9 @@ class DataViewController: UIViewController {
   override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     self.dataLabel!.text = dataObject
+    if isAnimating {
+      animationView?.play()
+    }
   }
 
   private func addStaticView() {
@@ -65,19 +70,19 @@ class DataViewController: UIViewController {
       view.loopMode = .loop
       view.backgroundColor = UIColor.white
       view.animation = animation
-      view.shouldRasterizeWhenIdle = true // Tried both true and false, results were the same.  
+      view.shouldRasterizeWhenIdle = true // Tried both true and false, results were the same.
       view.contentMode = .scaleAspectFit
       view.translatesAutoresizingMaskIntoConstraints = false
       self.animationView = view
       contentView.addSubview(view)
       view.stretchToContainerEdges()
       self.animationView?.play()
+      self.isAnimating = true
     }
   }
 }
 
-
-
+/// A helper method to generate an image in a certain size and color
 extension UIImage {
   static func imageWithSize(size : CGSize, color : UIColor = UIColor.white) -> UIImage? {
     var image:UIImage? = nil

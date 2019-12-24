@@ -1,5 +1,5 @@
 //
-//  ModelController.swift
+//  PagesManager.swift
 //  lottie_performance_bug
 //
 //  Created by Izik Lisbon on 12/23/19.
@@ -8,22 +8,13 @@
 
 import UIKit
 
-/*
- A controller object that manages a simple model -- a collection of month names.
- 
- The controller serves as the data source for the page view controller; it therefore implements pageViewController:viewControllerBeforeViewController: and pageViewController:viewControllerAfterViewController:.
- It also implements a custom method, viewControllerAtIndex: which is useful in the implementation of the data source methods, and in the initial configuration of the application.
- 
- There is no need to actually create view controllers for each page in advance -- indeed doing so incurs unnecessary overhead. Given the data model, these methods create, configure, and return a new view controller on demand.
- */
-
-
-class ModelController: NSObject, UIPageViewControllerDataSource {
+// Managing the pages in the UIPageViewController.
+class PagesManager: NSObject, UIPageViewControllerDataSource {
 
   var pageData: [String] = ["1", "2", "3"]
-  var pageControllers: [DataViewController] = []
+  var pageControllers: [PageViewController] = []
 
-  func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> DataViewController? {
+  func viewControllerAtIndex(_ index: Int, storyboard: UIStoryboard) -> PageViewController? {
     // Return the data view controller for the given index.
     if (self.pageData.count == 0) || (index >= self.pageData.count) {
         return nil
@@ -34,13 +25,13 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
     }
 
     // Create a new view controller and pass suitable data.
-    let dataViewController = storyboard.instantiateViewController(withIdentifier: "DataViewController") as! DataViewController
+    let dataViewController = storyboard.instantiateViewController(withIdentifier: "PageViewController") as! PageViewController
     dataViewController.dataObject = self.pageData[index]
     pageControllers.append(dataViewController)
     return dataViewController
   }
 
-  func indexOfViewController(_ viewController: DataViewController) -> Int {
+  func indexOfViewController(_ viewController: PageViewController) -> Int {
     // Return the index of the given data view controller.
     // For simplicity, this implementation uses a static array of model objects and the view controller stores the model object; you can therefore use the model object to identify the index.
     return pageData.firstIndex(of: viewController.dataObject) ?? NSNotFound
@@ -49,7 +40,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
   // MARK: - Page View Controller Data Source
 
   func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-      var index = self.indexOfViewController(viewController as! DataViewController)
+      var index = self.indexOfViewController(viewController as! PageViewController)
       if (index == 0) || (index == NSNotFound) {
           return nil
       }
@@ -59,7 +50,7 @@ class ModelController: NSObject, UIPageViewControllerDataSource {
   }
 
   func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-      var index = self.indexOfViewController(viewController as! DataViewController)
+      var index = self.indexOfViewController(viewController as! PageViewController)
       if index == NSNotFound {
           return nil
       }
